@@ -1,8 +1,29 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
 canvas {
   position: fixed;
   top: 0;
   left: 0;
 }
+
+html, body { height: 100%; width: 100%; }
+
+#loading-env {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+#loading-env>h1 {
+  color:rgb(255, 255, 255);
+ }
 
 #env {
   width: 100%;
@@ -13,4 +34,34 @@ canvas {
 
 #env-ui {
   position: absolute;
+}
+
+/* PROGRESS BAR */
+.progress {
+  width: 100%;
+  max-width: 500px;
+  height: 20px;
+  background: #1e1e1e;
+  border: rgba(255, 255, 255, 0.22) 1px solid;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  display: block;
+  width: 10%;
+  height: 100%;
+  background: linear-gradient(90deg,#ffd33d,#ea4aaa 17%,#b34bff 34%,#01feff 51%,#ffd33d 68%,#ea4aaa 85%,#b34bff);
+  background-size: 300% 100%;
+  animation: progress-animation 2s linear infinite;
+}
+
+@keyframes progress-animation {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
 }

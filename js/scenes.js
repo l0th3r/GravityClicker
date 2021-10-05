@@ -5,13 +5,12 @@ var MainScene = {
     scene: new THREE.Scene(),
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
     canvas: document.querySelector('#env'),
-    renderer: undefined,
     lights : {
         ambientLight: new THREE.AmbientLight(0xffffff),
     },
     Init: function () {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, alpha: true});
-        this.camera.position.set(9.5, 18, 21);
+        this.camera.position.set(17.3, 15.4, 4);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const Textures = [];
+var Textures = [];
 
 class Texture {
     name = "null";

@@ -1,47 +1,53 @@
 import * as THREE from 'three';
+import { Fetch } from './data';
 import { MainScene } from './scenes.js';
-import { Objects, Object } from './objects';
-import { GetTexture, Texture } from './texture';
+import { Objects, InitPlanets } from './objects';
 
-MainScene.Init();
-MainScene.Debug(); // DEBUG
+Fetch.GetPlanets(HandleSucess, HandlePending, HandleError);
 
-const moon_t = new THREE.TextureLoader().load('https://raw.githubusercontent.com/l0th3r/js3DTest/main/src/assets/moon.jpg');
+function HandlePending(e) {
+    document.getElementById('progress').style.width = `${(e * 100 / 4)}%`;
+    document.getElementById('loading-txt').innerText = `Loading ${(e * 100 / 4)}%`;
+}
 
-const moon = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshStandardMaterial({
-        map: moon_t
-    })
-);
+function HandleError(e) {
+    document.getElementById('progress').style.width = "100%";
+    document.getElementById('loading-txt').innerText = "Error: " + e;
+}
 
-const moon2 = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
-    new THREE.MeshStandardMaterial({
-        map: moon_t
-    })
-);
+function HandleSucess(e) {
+    
+    setTimeout(function(){
+        document.getElementById('progress').style.width = "100%";
+        document.getElementById('loading-txt').innerText = `Loading 100%`;
+        
+        setTimeout(function(){
+            document.getElementById('loading-env').remove();
+                MainScene.Init();
+                // MainScene.Debug(); // DEBUG
 
-const moo = new Object(MainScene.scene, "Moon", moon, 6, 0.2, 0, true);
-const mo = new Object(MainScene.scene, "Moon2", moon2, 3, 0, 0, true, true, moo);
+                InitPlanets();
+
+                Update();
+        }, /*800*/0);
+    }, /*1000*/0);
+}
 
 function Update() {
     requestAnimationFrame(Update);
 
-    Objects.forEach(obj => {
-        obj.Update();
-    });
+    // update all objects
+    Objects.forEach(obj => { obj.Update(); });
     
     MainScene.Render();
 }
 
-Update();
-
-
-//handle window resize
+// handle window resize
 window.addEventListener( 'resize', onWindowResize, false );
 function onWindowResize() {
-    MainScene.camera.aspect = window.innerWidth / window.innerHeight;
-    MainScene.camera.updateProjectionMatrix();
-    MainScene.renderer.setSize( window.innerWidth, window.innerHeight );
+    if(MainScene.renderer) {
+        MainScene.camera.aspect = window.innerWidth / window.innerHeight;
+        MainScene.camera.updateProjectionMatrix();
+        MainScene.renderer.setSize( window.innerWidth, window.innerHeight );
+    }
 }
