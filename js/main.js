@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
@@ -23,12 +22,12 @@ function HandleSucess(e) {
         
         setTimeout(function(){
             document.getElementById('loading-env').remove();
-                MainScene.Init();
-                // MainScene.Debug(); // DEBUG
 
-                InitPlanets();
+            MainScene.Init();
+            //MainScene.Debug(); // DEBUG
 
-                Update();
+            InitPlanets();
+            Update();
         }, /*800*/0);
     }, /*1000*/0);
 }

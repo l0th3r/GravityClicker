@@ -15,7 +15,9 @@ function InitPlanets() {
         })
     );
     const sun = new Object(MainScene.scene, "sun", sun_obj, 0, 0, 0, true);
-    sun.allowRotation = false; sun.allowMovements = false;
+    sun.allowRotation = false;
+    sun.allowMovements = false;
+    sun.allowInteraction = false;
 
     Data.forEach((planet, i) => {
         const planet_t = new THREE.TextureLoader().load(`/textures/planets/${planet.id}.jpg`);
@@ -29,7 +31,7 @@ function InitPlanets() {
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.001, 0.05), getRandomBetw(0.01, 0.028), true, {info: planet});
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.001, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"});
     });
 }
 
@@ -50,6 +52,7 @@ function getRandomBetw(min, max) {
 
 class Object {
     allowMovements = true;
+    allowInteraction = true;
     allowRotation = true;
     orbitInfo = {
         orbitRadius: 0,
@@ -87,12 +90,23 @@ class Object {
     GetOrbitOrigin() {
         return this.orbitInfo.origin;
     }
-    constructor(scene, name, object, orbitRadius, rotSpeed, orbitSpeed, hasOrbitLine = true, data = {}, link = false, linked = undefined) {
+    Default_Hover(e) {}
+    Default_UnHover() {}
+    Default_Interact() {}
+    constructor(
+        scene, id, object, orbitRadius, rotSpeed, orbitSpeed, hasOrbitLine = true, objData = {},
+        hoverFunc = this.Default_Hover, unHoverFunc = this.Default_UnHover, interactFunc = this.Default_Interact, link = false, linked = undefined)
+        {
         // set object settings
-        this.name = name;
+        this.id = id;
         this.object = object;
-        this.object.data = data;
+        this.object.data = objData;
+        this.object.data.parent = this;
         this.object.position.set(orbitRadius, 0, 0);
+
+        this.Hover = hoverFunc;
+        this.UnHover = unHoverFunc;
+        this.Interact = interactFunc;
         
         // set orbit settings
         this.orbitInfo.orbitRadius = orbitRadius;
@@ -111,6 +125,7 @@ class Object {
             );
             this.orbitLine.rotation.set(1.5708, 0, 0);
             this.orbitLine.position.set(this.orbitInfo.origin.x, this.orbitInfo.origin.y, this.orbitInfo.origin.z);
+            this.orbitLine.data = {type: "_OrbitLine"}
             scene.add(this.orbitLine);
         }
         this.hasOrbitLine = hasOrbitLine;
