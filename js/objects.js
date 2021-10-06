@@ -6,32 +6,51 @@ var Objects = [];
 
 function InitPlanets() {
 
-    const moon_t = new THREE.TextureLoader().load('https://raw.githubusercontent.com/l0th3r/js3DTest/main/src/assets/moon.jpg');
+    const sun_t = new THREE.TextureLoader().load(`/textures/planets/sun.jpg`);
 
     const sun_obj = new THREE.Mesh(
         new THREE.SphereGeometry(60, 32, 32),
         new THREE.MeshStandardMaterial({
-            color: 0xffffff
+            map: sun_t
         })
     );
-
-    new Object(MainScene.scene, "sun", sun_obj, 0, 0, 0, true);
+    const sun = new Object(MainScene.scene, "sun", sun_obj, 0, 0, 0, true);
+    sun.allowRotation = false; sun.allowMovements = false;
 
     Data.forEach((planet, i) => {
-        
-        console.log(planet);
+        const planet_t = new THREE.TextureLoader().load(`/textures/planets/${planet.id}.jpg`);
+    
+        // calculate size
+        const newRadius = remap(planet.equaRadius, 1188.3, 71492, 12, 20);
         const temp_obj = new THREE.Mesh(
-            new THREE.SphereGeometry(Math.floor(planet.equaRadius * 0.001) / 3, 32, 32),
+            new THREE.SphereGeometry(newRadius, 32, 32),
             new THREE.MeshStandardMaterial({
-                map: moon_t
+                map: planet_t
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 100, Math.random(), Math.random() * 0.2, true, {info: planet});
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.001, 0.05), getRandomBetw(0.01, 0.028), true, {info: planet});
     });
 }
 
+function remap(from, fromMin, fromMax, toMin, toMax) {
+    var fromAbs  =  from - fromMin;
+    var fromMaxAbs = fromMax - fromMin;      
+    var normal = fromAbs / fromMaxAbs;
+    var toMaxAbs = toMax - toMin;
+    var toAbs = toMaxAbs * normal;
+    var to = toAbs + toMin;
+    return to;
+}
+
+function getRandomBetw(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  
+
 class Object {
+    allowMovements = true;
+    allowRotation = true;
     orbitInfo = {
         orbitRadius: 0,
         rotSpeed: 0,
@@ -45,10 +64,14 @@ class Object {
         // Meant to be executed every frames
         if(this.isLinked === true)
             this.SetOrbitOrigin(this.linked.object.position.x, this.linked.object.position.y, this.linked.object.position.z);
-        this.orbitInfo.rot += this.orbitInfo.rotSpeed;
-        this.orbitInfo.orbit += this.orbitInfo.orbitSpeed;
-        this.object.rotation.set(0, this.orbitInfo.rot, 0);
-        this.object.position.set((Math.cos(this.orbitInfo.orbit) * this.orbitInfo.orbitRadius) + this.orbitInfo.origin.x, this.orbitInfo.origin.y, (Math.sin(this.orbitInfo.orbit) * this.orbitInfo.orbitRadius) + this.orbitInfo.origin.z);
+        if(this.allowRotation === true) {
+            this.orbitInfo.rot += this.orbitInfo.rotSpeed;
+            this.object.rotation.set(0, this.orbitInfo.rot, 0);
+        }
+        if(this.allowMovements === true) {
+            this.orbitInfo.orbit += this.orbitInfo.orbitSpeed;
+            this.object.position.set((Math.cos(this.orbitInfo.orbit) * this.orbitInfo.orbitRadius) + this.orbitInfo.origin.x, this.orbitInfo.origin.y, (Math.sin(this.orbitInfo.orbit) * this.orbitInfo.orbitRadius) + this.orbitInfo.origin.z);
+        }
     };
     LinkOrbit(object) {
         this.isLinked = true;
