@@ -31,7 +31,7 @@ function InitPlanets() {
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.001, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"});
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"});
     });
 }
 

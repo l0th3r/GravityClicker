@@ -1,6 +1,6 @@
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Objects } from './objects';
 
 var MainScene = {
     allowHover: true,
@@ -19,6 +19,8 @@ var MainScene = {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+
+        //this.camera.position.sub(new Vector3(0,0,0)).setLength(100).add(new Vector3(0,0,0));
 
         this.scene.add(this.lights.ambientLight);
         this.ChangeBG('/textures/stars.jpg');

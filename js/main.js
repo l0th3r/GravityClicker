@@ -1,7 +1,10 @@
 import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
+import { UserData, LoadUserData } from './userdata';
+import { SpawnHeader, updateMoneyUI } from './interface';
 
+LoadUserData();
 Fetch.GetPlanets(HandleSucess, HandlePending, HandleError);
 
 function HandlePending(e) {
@@ -15,7 +18,6 @@ function HandleError(e) {
 }
 
 function HandleSucess(e) {
-    
     setTimeout(function(){
         document.getElementById('progress').style.width = "100%";
         document.getElementById('loading-txt').innerText = `Loading 100%`;
@@ -23,11 +25,12 @@ function HandleSucess(e) {
         setTimeout(function(){
             document.getElementById('loading-env').remove();
 
-            MainScene.Init();
+            //MainScene.Init();
             //MainScene.Debug(); // DEBUG
 
+            SpawnHeader();
             InitPlanets();
-            Update();
+            //Update();
         }, /*800*/0);
     }, /*1000*/0);
 }
