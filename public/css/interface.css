@@ -1,11 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+* {
+    font-family: Roboto;
+    font-weight: 700;
+}
+
 .ui-element {
     z-index: 100;
     position: absolute;
+    display: flex;
+    border-radius: 5px;
+}
+
+/* colors */
+.ui-shadow {
+    -webkit-box-shadow: 0 0 12px 0 rgba(0,0,0,0.59);
+    -moz-box-shadow: 0 0 12px 0 rgba(0,0,0,0.59);
+    box-shadow: 0 0 12px 0 rgba(0,0,0,0.59);
+}
+
+.ui-panel {
+    background-color: var(--main-ui-main-bg);
+}
+
+/* Positions */
+.ui-right { right: 0px; }
+.ui-bottom { bottom: 0px;}
+.ui-center { justify-content: center; }
+.ui-align { align-items: center; }
+.ui-content-right { justify-content: flex-end; }
+
+/* padding */
+.ui-padding {
+    padding: 20px 30px;
+}
+
+/* Text */
+.ui-element>span {
+    color: var(--main-ui-txt);
+}
+.ui-title {
+    font-weight: 700;
+}
+
+
+/* color variables */
+:root {
+    --main-ui-main-bg: rgb(41, 41, 41);
+    --main-ui-txt: #fff;
 }
 
 /* DEBUG */
-#testwin {
-    height: 200px;
-    width: 200px;
-    background-color: aqua;
+#ui-header {
+    height: 80px;
+    width: 400px;
 }
+
+@media screen and (max-width: 800px) {
+    #ui-header {
+        height: 80px;
+        width: 100%;
+    }
+}
+  
