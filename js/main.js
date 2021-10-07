@@ -2,7 +2,7 @@ import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
 import { UserData, LoadUserData } from './userdata';
-import { SpawnHeader, updateMoneyUI } from './interface';
+import { SpawnMainUi } from './interface';
 
 LoadUserData();
 Fetch.GetPlanets(HandleSucess, HandlePending, HandleError);
@@ -25,12 +25,14 @@ function HandleSucess(e) {
         setTimeout(function(){
             document.getElementById('loading-env').remove();
 
+            SpawnMainUi();
+            InitPlanets();
+
             //MainScene.Init();
             //MainScene.Debug(); // DEBUG
 
-            SpawnHeader();
-            InitPlanets();
             //Update();
+
         }, /*800*/0);
     }, /*1000*/0);
 }

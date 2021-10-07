@@ -24,13 +24,13 @@ class GameData {
 class PlanetData {
     id = String;
     lvl = Number;
-    lvlCargo = Number;
-    cargo = Number;
-    constructor(id, lvl = 0, lvlCargo = 0, cargo = 0) {
+    stockLvl = Number;
+    stock = Number;
+    constructor(id, lvl = 0, stockLvl = 0, stock = 0) {
         this.id = id;
         this.lvl = lvl;
-        this.lvlCargo = lvlCargo;
-        this.cargo = cargo;
+        this.stockLvl = stockLvl;
+        this.stock = stock;
     }
 }
 

@@ -7,6 +7,9 @@ function NewPlanetWin(planet) {
     
 }
 
+function SpawnMainUi() {
+    SpawnHeader();
+}
 
 function SpawnHeader() {
     
@@ -17,7 +20,7 @@ function SpawnHeader() {
     // create container
     var cont = document.createElement('div');
     cont.id = "ui-header";
-    cont.classList.add("ui-container", "ui-element", "ui-align", "ui-panel", "ui-padding", "ui-right");
+    cont.classList.add("ui-container", "ui-element", "ui-align", "ui-panel", "ui-padding", "ui-right", "ui-border-bot");
 
     var moneyTxt = document.createElement('span');
     moneyTxt.classList.add("ui-data");
@@ -35,4 +38,4 @@ function updateMoneyUI() {
     container.money.ui.innerHTML = UserData.money;
 }
 
-export { SpawnHeader, updateMoneyUI };
+export { SpawnMainUi, updateMoneyUI };
