@@ -9,7 +9,11 @@ class GameData {
         this.planets.push(data);
     }
     GetPlanetData(id) {
-        return this.planets.filter(p => p.id === id)[0];
+        return this.planets.filter(p => p.data.id === id)[0];
+    }
+    UpdatePlanetData(id, data) {
+        this.GetPlanetData(id).InjectData(data);
+        updateMoneyUI();
     }
     ModMoney(value) {
         this.money += value;
@@ -22,26 +26,28 @@ class GameData {
 }
 
 class PlanetData {
-    id = String;
-    lvl = Number;
-    stockLvl = Number;
-    stock = Number;
-    ressourceName = String;
-    constructor(id, lvl = 0, stockLvl = 0, stock = 0, ressourceName = "Carbon") {
-        this.id = id;
-        this.lvl = lvl;
-        this.stockLvl = stockLvl;
-        this.stock = stock;
-        this.ressourceName = ressourceName;
+    data = {
+        id: "null",
+        lvl: 1,
+        stock: 0,
+        stockLvl: 1,
+        ressourceName : "Carbon",
+        miningProgression : -1
+    }
+    InjectData(inputData = {}) {
+        this.data = Object.assign(this.data, inputData);
+    }
+    constructor(inputData = {}) {
+        this.InjectData(inputData);
     }
 }
 
 function LoadUserData() {
     // DEV
     UserData = new GameData(10);
-    UserData.AddPlanetData(new PlanetData("Jupiter", 2, 4, 30));
-    UserData.AddPlanetData(new PlanetData("Venus"));
-    UserData.AddPlanetData(new PlanetData("Earth"));
+    UserData.AddPlanetData(new PlanetData({id: "Jupiter", lvl: 1, stock: 0, stockLvl: 2, ressourceName: "Carbon"}));
+    UserData.AddPlanetData(new PlanetData({id: "Venus"}));
+    UserData.AddPlanetData(new PlanetData({id: "Earth"}));
 }
 
 export { UserData, LoadUserData };

@@ -1,4 +1,4 @@
-var Data = [];
+var GameData = {};
 
 const Fetch = {
     MakeReq: function(url, successCallback, pendingCallback, failCallback) {
@@ -8,16 +8,20 @@ const Fetch = {
             
             if(this.readyState === 4 && this.status === 200) {
                 // success
-                Data = JSON.parse(this.response).bodies;
-                successCallback(this.status);
+                var parsedData = JSON.parse(this.response);
+
+                if(successCallback)
+                    successCallback(this.status, parsedData);
             }
             else if(this.readyState != 4) {
                 // temp status
-                pendingCallback(this.readyState);
+                if(pendingCallback)
+                    pendingCallback(this.readyState);
             }
             else {
                 // fail
-                failCallback(this.status);
+                if(failCallback)
+                    failCallback(this.status);
             }
         };
 
@@ -41,6 +45,9 @@ const Fetch = {
 
         return str.slice(0, -1);
     },
+    GetJsonFile: function(localPath, successCallback, pendingCallback, failCallback) {
+        this.MakeReq(localPath, (e, f)=>{GameData.settings = f; successCallback()}, pendingCallback, failCallback);
+    },
     GetPlanets: function(successCallback, pendingCallback, failCallback) {
         
         //format url with settings
@@ -61,8 +68,8 @@ const Fetch = {
         ]);
 
         // request
-        this.MakeReq(url, successCallback, pendingCallback, failCallback);
+        this.MakeReq(url, (e, f)=>{GameData.planets = f.bodies; successCallback(f.bodies)}, pendingCallback, failCallback);
     }
 };
 
-export { Data, Fetch };
+export { GameData, Fetch };

@@ -35,7 +35,11 @@ html, body { height: 100%; width: 100%; }
 
 #loading-env>h1 {
   color:rgb(255, 255, 255);
- }
+}
+
+button:hover, .btn:hover {
+  cursor: pointer;
+}
 
 /* PROGRESS BAR */
 .progress {

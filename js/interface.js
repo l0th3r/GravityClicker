@@ -1,25 +1,97 @@
+import { GameData } from "./data";
 import { UserData } from "./userdata";
-
-// console.log(JSON.parse(data));
 
 const container = {}
 
+// UI event listener
 container.planetWin = document.getElementById('ui-planet-win');
 container.isPlanetWinOpen = false
+container.mineBtn = document.getElementById('btn-mine');
+container.sellStockBtn = document.getElementById('btn-sell-stock');
+container.upgradeStock = document.getElementById('btn-upgrade-stock');
+
+container.mineBtn.addEventListener('click', ()=>MineEvent(container.mineBtn.value));
+container.sellStockBtn.addEventListener('click', ()=>SellStock(container.mineBtn.value));
+container.upgradeStock.addEventListener('click', ()=>UpgradeStock(container.mineBtn.value));
+
 document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
 
-function SetPlanetWin(planetId) {
+function UpgradeStock(planetId) {
 
-    var data = UserData.GetPlanetData(planetId);
-    console.log(data);
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
 
-    UpdateClassElement('ui-planet-name', data.id);
-    UpdateClassElement('ui-ressource-name', data.ressourceName);
-    UpdateClassElement('ui-stock', data.stock);
-    UpdateClassElement('ui-max-stock', data.stockLvl * 10);
-    UpdateClassElement('ui-next-stock-upgrade', data.stock);
+    if(UserData.money >= (planetData.stockLvl + 1) * 10) {
+        UserData.ModMoney(-(planetData.stockLvl + 1) * 10);
+        UserData.GetPlanetData(planetId).data.stockLvl += 1;
+    } else {
+        console.log("fuck off");
+    }
+
     
-    if(container.isPlanetWinOpen === false)
+    SetPlanetWin(planetId, false);
+}
+
+function SellStock(planetId) {
+    
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
+    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
+
+    UserData.ModMoney(planetData.stock * (ressourceData.unit_value + 1));
+    UserData.GetPlanetData(planetId).data.stock = 0;
+    
+    SetPlanetWin(planetId, false);
+}
+
+function MineEvent(planetId) {
+    
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
+
+    if(planetData.stock < planetData.stockLvl * 10)
+    {
+        UserData.GetPlanetData(planetId).data.stock += 1;
+        SetPlanetWin(planetId, false);
+    }
+}
+
+function SetPlanetWin(planetId, allowWinOpen = true) {
+
+    // static data
+    const planetData = UserData.GetPlanetData(planetId).data;
+    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
+
+    // variable data
+    var stockValue = planetData.stock * (ressourceData.unit_value + 1);
+
+    container.mineBtn.value = planetData.id;
+
+    UpdateClassElement('ui-planet-name', planetData.id);
+    UpdateClassElement('ui-ressource-name', planetData.ressourceName);
+    UpdateClassElement('ui-stock', planetData.stock);
+    UpdateClassElement('ui-max-stock', planetData.stockLvl * 10);
+    UpdateClassElement('ui-next-stock-upgrade', planetData.stock);
+    UpdateClassElement('ui-mining-value', planetData.lvl);
+    UpdateClassElement('ui-stock-value', stockValue);
+    UpdateClassElement('ui-next-stock-upgrade', planetData.stockLvl + 1);
+    UpdateClassElement('ui-next-stock-upgrade-price', (planetData.stockLvl + 1) * 10);
+
+    if(planetData.stock >= planetData.stockLvl * 10) {
+        container.mineBtn.setAttribute('disabled', "true"); 
+    }
+    else {
+        container.mineBtn.removeAttribute('disabled'); 
+    }
+
+    if(planetData.stock <= 0) {
+        container.sellStockBtn.setAttribute('disabled', "true"); 
+    }
+    else {
+        container.sellStockBtn.removeAttribute('disabled');   
+    }
+    
+    if(container.isPlanetWinOpen === false && allowWinOpen === true)
         OpenPlanetWin();
 }
 
@@ -64,6 +136,7 @@ function SpawnHeader() {
     container.money = {}
     container.money.window = cont;
     container.money.ui = document.getElementById('ui-money');
+    updateMoneyUI();    
 }
 
 function updateMoneyUI() {

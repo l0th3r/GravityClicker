@@ -5,7 +5,11 @@ import { UserData, LoadUserData } from './userdata';
 import { SpawnMainUi } from './interface';
 
 LoadUserData();
-Fetch.GetPlanets(HandleSucess, HandlePending, HandleError);
+Fetch.GetPlanets(LoadLocal, HandlePending, HandleError);
+
+function LoadLocal(e) {
+    Fetch.GetJsonFile('/assets/settings.json', HandleSucess, ()=>{}, HandleError);
+}
 
 function HandlePending(e) {
     document.getElementById('progress').style.width = `${(e * 100 / 4)}%`;
@@ -17,8 +21,8 @@ function HandleError(e) {
     document.getElementById('loading-txt').innerText = "Error: " + e;
 }
 
-function HandleSucess(e) {
-    setTimeout(function(){
+function HandleSucess() {
+    setTimeout(function() {
         document.getElementById('progress').style.width = "100%";
         document.getElementById('loading-txt').innerText = `Loading 100%`;
         
@@ -28,10 +32,10 @@ function HandleSucess(e) {
             SpawnMainUi();
             InitPlanets();
 
-            //MainScene.Init();
-            //MainScene.Debug(); // DEBUG
-
-            //Update();
+            // start three js scene
+            MainScene.Init();
+            // start frame update
+            Update();
 
         }, /*800*/0);
     }, /*1000*/0);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MainScene } from './scenes.js';
-import { Data } from './data';
+import { GameData } from './data';
 import { SetPlanetWin } from './interface';
 
 var Objects = [];
@@ -20,7 +20,7 @@ function InitPlanets() {
     sun.allowMovements = false;
     sun.allowInteraction = false;
 
-    Data.forEach((planet, i) => {
+    GameData.planets.forEach((planet, i) => {
         const planet_t = new THREE.TextureLoader().load(`/textures/planets/${planet.id}.jpg`);
     
         // calculate size
@@ -121,7 +121,7 @@ class Object {
         {
             this.orbitLine = new THREE.Mesh( 
                 new THREE.TorusGeometry( orbitRadius, 0.5, 10, 100),
-                new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.5 } )
+                new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.15 } )
             );
             this.orbitLine.rotation.set(1.5708, 0, 0);
             this.orbitLine.position.set(this.orbitInfo.origin.x, this.orbitInfo.origin.y, this.orbitInfo.origin.z);
