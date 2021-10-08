@@ -23,7 +23,7 @@ function HandleSucess(e) {
         document.getElementById('loading-txt').innerText = `Loading 100%`;
         
         setTimeout(function(){
-            document.getElementById('loading-env').remove();
+            document.getElementById('loading-env').style.display = "none";
 
             SpawnMainUi();
             InitPlanets();

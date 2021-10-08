@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MainScene } from './scenes.js';
 import { Data } from './data';
+import { SetPlanetWin } from './interface';
 
 var Objects = [];
 
@@ -31,7 +32,7 @@ function InitPlanets() {
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"});
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"}, undefined, undefined, (e)=>SetPlanetWin(e.id));
     });
 }
 
@@ -47,9 +48,8 @@ function remap(from, fromMin, fromMax, toMin, toMax) {
 
 function getRandomBetw(min, max) {
     return Math.random() * (max - min) + min;
-  }
+}
   
-
 class Object {
     allowMovements = true;
     allowInteraction = true;

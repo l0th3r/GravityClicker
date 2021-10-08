@@ -1,10 +1,42 @@
 import { UserData } from "./userdata";
 
+// console.log(JSON.parse(data));
+
 const container = {}
 
+container.planetWin = document.getElementById('ui-planet-win');
+container.isPlanetWinOpen = false
+document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
 
-function NewPlanetWin(planet) {
+function SetPlanetWin(planetId) {
+
+    var data = UserData.GetPlanetData(planetId);
+    console.log(data);
+
+    UpdateClassElement('ui-planet-name', data.id);
+    UpdateClassElement('ui-ressource-name', data.ressourceName);
+    UpdateClassElement('ui-stock', data.stock);
+    UpdateClassElement('ui-max-stock', data.stockLvl * 10);
+    UpdateClassElement('ui-next-stock-upgrade', data.stock);
     
+    if(container.isPlanetWinOpen === false)
+        OpenPlanetWin();
+}
+
+function UpdateClassElement(className, value) {
+    var list = document.getElementsByClassName(className);
+    for (let item of list) {
+        item.innerHTML = value;
+    }
+}
+
+function ClosePlanetWin() {
+    container.planetWin.style.display = "none";
+    container.isPlanetWinOpen = false;
+}
+function OpenPlanetWin() {
+    container.planetWin.style.display = "block";
+    container.isPlanetWinOpen = true;
 }
 
 function SpawnMainUi() {
@@ -38,4 +70,4 @@ function updateMoneyUI() {
     container.money.ui.innerHTML = UserData.money;
 }
 
-export { SpawnMainUi, updateMoneyUI };
+export { SpawnMainUi, updateMoneyUI, SetPlanetWin };

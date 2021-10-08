@@ -26,19 +26,22 @@ class PlanetData {
     lvl = Number;
     stockLvl = Number;
     stock = Number;
-    constructor(id, lvl = 0, stockLvl = 0, stock = 0) {
+    ressourceName = String;
+    constructor(id, lvl = 0, stockLvl = 0, stock = 0, ressourceName = "Carbon") {
         this.id = id;
         this.lvl = lvl;
         this.stockLvl = stockLvl;
         this.stock = stock;
+        this.ressourceName = ressourceName;
     }
 }
 
 function LoadUserData() {
     // DEV
     UserData = new GameData(10);
-    UserData.AddPlanetData(new PlanetData("Venus", 2, 4, 40));
-    UserData.AddPlanetData(new PlanetData("Jupiter"));
+    UserData.AddPlanetData(new PlanetData("Jupiter", 2, 4, 30));
+    UserData.AddPlanetData(new PlanetData("Venus"));
+    UserData.AddPlanetData(new PlanetData("Earth"));
 }
 
 export { UserData, LoadUserData };
