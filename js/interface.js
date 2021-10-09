@@ -2,6 +2,7 @@ import { GameData } from "./data";
 import { UserData, SaveUserData, ClearLocalData, OutputUserData } from "./userdata";
 import { TriggerInputSaveFile } from './file';
 import { MainScene } from "./scenes";
+import { MiningEvent } from './mine_events';
 
 const container = {}
 
@@ -10,6 +11,8 @@ container.displayedWindow = undefined;
 container.planetWin = document.getElementById('ui-planet-win');
 container.isPlanetWinOpen = false
 container.planetWinProgressBar = document.getElementById('progress-bar-mine');
+container.planetWinData = {};
+container.ressourceData = undefined;
 
 container.mineBtn = document.getElementById('btn-mine');
 container.sellStockBtn = document.getElementById('btn-sell-stock');
@@ -30,59 +33,19 @@ container.importBtn.addEventListener('click', TriggerInputSaveFile)
 
 document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
 
-function UpgradeStock(planetId) {
-
-    //Static
-    const planetData = UserData.GetPlanetData(planetId).data;
-
-    if(UserData.money >= (planetData.stockLvl + 1) * 10) {
-        UserData.ModMoney(-(planetData.stockLvl + 1) * 10);
-        UserData.GetPlanetData(planetId).data.stockLvl += 1;
-    }
+function SetPlanetWinData(planetId) {
+    container.planetWinData.planetData = UserData.GetPlanetData(planetId).data;
+    container.planetWinData.ressourceData = GameData.settings.ressources.filter(r => r.name === container.planetWinData.planetData.ressourceName)[0];
     
-    SetPlanetWin(planetId, false);
-}
-
-function SellStock(planetId) {
     
-    //Static
-    const planetData = UserData.GetPlanetData(planetId).data;
-    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
-
-    UserData.ModMoney(planetData.stock * (ressourceData.unit_value + 1));
-    UserData.GetPlanetData(planetId).data.stock = 0;
-    
-    SetPlanetWin(planetId, false);
-}
-
-function MineEvent(planetId) {
-    UserData.GetPlanetData(planetId).data.miningProgression = 0;
-}
-
-function Mine(planetId) {
-    
-    //Static
-    const planetData = UserData.GetPlanetData(planetId).data;
-
-    if(planetData.stock < planetData.stockLvl * 10 && planetData.miningProgression === -1)
-    {
-        UserData.GetPlanetData(planetId).data.stock += 1;
-        if(container.planetWinId === planetId)
-            SetPlanetWin(planetId, false);
-    }
-}
-
-function SetPlanetWin(planetId, allowWinOpen = true) {
-
-    // static data
-    const planetData = UserData.GetPlanetData(planetId).data;
-    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
-
-    // variable data
-    var stockValue = planetData.stock * (ressourceData.unit_value + 1);
-    
+    container.planetWinData.stockValue = container.planetWinData.planetData.stock * (container.planetWinData.ressourceData.unit_value + 1);
     container.planetWinId = planetId;
-    container.mineBtn.value = planetData.id;
+    container.mineBtn.value = container.planetWinData.planetData.id;
+    UpdatePlanetWin(planetId);
+}
+
+function UpdatePlanetWin(planetId) {
+    var planetData = container.planetWinData.planetData;
     
     container.planetWinProgressBar.classList = "";
     container.planetWinProgressBar.classList.add("progress-planet", `ui-${planetId}-progress`);
@@ -94,7 +57,7 @@ function SetPlanetWin(planetId, allowWinOpen = true) {
     UpdateClassElement('ui-max-stock', planetData.stockLvl * 10);
     UpdateClassElement('ui-next-stock-upgrade', planetData.stock);
     UpdateClassElement('ui-mining-value', planetData.lvl);
-    UpdateClassElement('ui-stock-value', stockValue);
+    UpdateClassElement('ui-stock-value', container.planetWinData.stockValue);
     UpdateClassElement('ui-next-stock-upgrade', planetData.stockLvl + 1);
     UpdateClassElement('ui-next-stock-upgrade-price', (planetData.stockLvl + 1) * 10);
     
@@ -118,15 +81,63 @@ function SetPlanetWin(planetId, allowWinOpen = true) {
     } else {
         container.upgradeStock.removeAttribute('disabled');
     }
+}
+
+function UpgradeStock(planetId) {
+
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
+
+    if(UserData.money >= (planetData.stockLvl + 1) * 10) {
+        UserData.ModMoney(-(planetData.stockLvl + 1) * 10);
+        UserData.GetPlanetData(planetId).data.stockLvl += 1;
+    }
     
-    if(container.isPlanetWinOpen === false && allowWinOpen === true)
-        OpenPlanetWin();
+    SetPlanetWinData(planetId);
+    OpenPlanetWin();
+}
+
+function SellStock(planetId) {
+    
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
+    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
+
+    UserData.ModMoney(planetData.stock * (ressourceData.unit_value + 1));
+    UserData.GetPlanetData(planetId).data.stock = 0;
+    
+    SetPlanetWinData(planetId);
+}
+
+function MineEvent(planetId) {
+    const ressourceData = GameData.settings.ressources.filter(r => r.name === UserData.GetPlanetData(planetId).data.ressourceName)[0];
+    new MiningEvent(planetId, ressourceData.mining_time);
+}
+
+function Mine(planetId) {
+    
+    //Static
+    const planetData = UserData.GetPlanetData(planetId).data;
+
+    if(planetData.stock < planetData.stockLvl * 10 && planetData.miningProgression === -1)
+    {
+        UserData.GetPlanetData(planetId).data.stock += 1;
+        if(container.planetWinId === planetId)
+            SetPlanetWinData(planetId, false);
+    }
 }
 
 function UpdateClassElement(className, value) {
     var list = document.getElementsByClassName(className);
     for (let item of list) {
         item.innerHTML = value;
+    }
+}
+
+function UpdatePlanetsProgressBar(planetId) {
+    var list = document.getElementsByClassName(`ui-${planetId}-progress`);
+    for (let item of list) {
+        item.style.width = `${UserData.GetPlanetData(planetId).data.miningProgression}%`;
     }
 }
 
@@ -192,8 +203,8 @@ for (let item of list) {
 }
 
 window.onbeforeunload = function (event) {
-    if(!UserData.requestWipe)
+    if(UserData && !UserData.requestWipe)
         SaveUserData();
 };
 
-export { SpawnMainUi, updateMoneyUI, SetPlanetWin, Mine };
+export { SpawnMainUi, updateMoneyUI, SetPlanetWinData, Mine, UpdatePlanetsProgressBar, OpenPlanetWin };

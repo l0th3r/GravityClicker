@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { MainScene } from './scenes.js';
 import { GameData } from './data';
-import { SetPlanetWin } from './interface';
+import { SetPlanetWinData, OpenPlanetWin } from './interface';
 
 var Objects = [];
 
@@ -32,7 +32,7 @@ function InitPlanets() {
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"}, undefined, undefined, (e)=>{SetPlanetWin(e.id); MainScene.FocusObject(e.id)});
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"}, undefined, undefined, (e)=>{SetPlanetWinData(e.id); OpenPlanetWin(); MainScene.FocusObject(e.id)});
     });
 }
 

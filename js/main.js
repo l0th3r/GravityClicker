@@ -1,8 +1,9 @@
 import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
-import { LoadUserData, UserData } from './userdata';
-import { SpawnMainUi, Mine, SetPlanetWin } from './interface';
+import { LoadUserData } from './userdata';
+import { SpawnMainUi } from './interface';
+import { MiningEvents } from './mine_events';
 
 Fetch.GetPlanets(LoadLocal, HandlePending, HandleError);
 
@@ -47,37 +48,14 @@ function Update() {
     requestAnimationFrame(Update);
 
     // update all 3D objects
-    Objects.forEach(obj => { obj.Update(); });
+    Objects.forEach(obj => obj.Update());
 
-    // update planets data
-    UpdatePlanetsData();
+    // update mining events
+    MiningEvents.forEach(me => me.Update());
     
+    MainScene.controls.update();
     MainScene.Update();
     MainScene.Render();
-}
-
-function UpdatePlanetsData() {
-    // get planets data
-    const planets = UserData.planets;
-
-    // get ones that mining is engaged
-    const needUpdate = planets.filter(p => p.data.miningProgression >= 0);
-
-    needUpdate.forEach(e => {
-        if(e.data.miningProgression < 100) {
-            UserData.GetPlanetData(e.data.id).data.miningProgression += 1;
-            
-            // update planets progressbars
-            var list = document.getElementsByClassName(`ui-${e.data.id}-progress`);
-            for (let item of list) {
-                item.style.width = `${UserData.GetPlanetData(e.data.id).data.miningProgression}%`;
-            }
-        }
-        else {
-            UserData.GetPlanetData(e.data.id).data.miningProgression = -1;
-            Mine(e.data.id);
-        }
-    });
 }
 
 // handle window resize

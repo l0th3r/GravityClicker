@@ -31,21 +31,7 @@ var MainScene = {
         if(this.cameraTarget)
         {
             const objPos = this.cameraTarget.object.position;
-            this.camera.lookAt(objPos);
-            // this.camera.position.set(objPos.x - 30, objPos.y, objPos.z - 30);
-
-            if(objPos.z - 30 > this.camera.position.z) {
-                this.camera.translateZ(-20);
-            }
-            if(objPos.x - 30 > this.camera.position.x) {
-                this.camera.translateX(-20);
-            }
-            if(objPos.z - 30 < this.camera.position.z) {
-                this.camera.translateZ(20);
-            }
-            if(objPos.x - 30 < this.camera.position.x) {
-                this.camera.translateX(20);
-            }
+            this.camera.lookAt(new Vector3(objPos.x, objPos.y, objPos.z));
 
         } else {
             this.camera.lookAt(new Vector3(0, 0, 0));
@@ -98,17 +84,17 @@ var MainScene = {
         if(this.cameraTarget) {
             this.UnfocusObject();
         }
-        else { // DEBUG
-            const planet = Objects.filter(p => p.id === planetId)[0];
-            planet.allowMovements = false;
+
+        const planet = Objects.filter(p => p.id === planetId)[0];
+        planet.allowMovements = false;
     
-            // set the camera target
-            this.cameraTarget = planet;
-            this.camera.rotation.set(0, 0, 0);
-        }
+        // set the camera target
+        this.cameraTarget = planet;
+        this.camera.position.set(planet.object.position.x - 30, planet.object.position.y + 30, planet.object.position.z - 30);
     },
     UnfocusObject: function () {
-        this.cameraTarget.allowMovements = true;
+        if(this.cameraTarget)
+            this.cameraTarget.allowMovements = true;
         this.cameraTarget = undefined;
 
         this.camera.position.set(600, 600, 0);

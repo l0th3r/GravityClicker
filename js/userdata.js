@@ -98,7 +98,7 @@ function HandleSaveFileLoad(fileContent) {
     if(error = "null")
     {
         UserData = parsedData;
-        SaveUserData(true);
+        SaveUserData();
         location.reload();
     }
 }
