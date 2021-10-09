@@ -1,10 +1,13 @@
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Objects } from './objects';
 
 var MainScene = {
     allowHover: true,
     scene: new THREE.Scene(),
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1500),
+    cameraTarget: undefined,
     raycaster: new THREE.Raycaster(),
     mouse: {x: 0, y:0},
     canvas: document.querySelector('#env'),
@@ -15,14 +18,38 @@ var MainScene = {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, alpha: true});
         this.camera.position.set(600, 600, 0);
         this.camera.rotation.set(10, 0, 0);
+        this.cameraBasePos = this.camera.position;
+        this.cameraBaseRot = this.camera.rotation;
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-        //this.camera.position.sub(new Vector3(0,0,0)).setLength(100).add(new Vector3(0,0,0));
-
         this.scene.add(this.lights.ambientLight);
         this.ChangeBG('/textures/stars.jpg');
+    },
+    Update: function () {
+        if(this.cameraTarget)
+        {
+            const objPos = this.cameraTarget.object.position;
+            this.camera.lookAt(objPos);
+            // this.camera.position.set(objPos.x - 30, objPos.y, objPos.z - 30);
+
+            if(objPos.z - 30 > this.camera.position.z) {
+                this.camera.translateZ(-20);
+            }
+            if(objPos.x - 30 > this.camera.position.x) {
+                this.camera.translateX(-20);
+            }
+            if(objPos.z - 30 < this.camera.position.z) {
+                this.camera.translateZ(20);
+            }
+            if(objPos.x - 30 < this.camera.position.x) {
+                this.camera.translateX(20);
+            }
+
+        } else {
+            this.camera.lookAt(new Vector3(0, 0, 0));
+        }
     },
     Debug: function() {
         const gridHelper = new THREE.GridHelper( 1000, 100 );
@@ -65,6 +92,27 @@ var MainScene = {
                 document.body.style.cursor = 'default';
             }
         }
+    },
+    FocusObject: function(planetId) {
+
+        if(this.cameraTarget) {
+            this.UnfocusObject();
+        }
+        else { // DEBUG
+            const planet = Objects.filter(p => p.id === planetId)[0];
+            planet.allowMovements = false;
+    
+            // set the camera target
+            this.cameraTarget = planet;
+            this.camera.rotation.set(0, 0, 0);
+        }
+    },
+    UnfocusObject: function () {
+        this.cameraTarget.allowMovements = true;
+        this.cameraTarget = undefined;
+
+        this.camera.position.set(600, 600, 0);
+        this.camera.rotation.set(10, 0, 0);
     }
 }
 

@@ -1,6 +1,7 @@
 import { GameData } from "./data";
 import { UserData, SaveUserData, ClearLocalData, OutputUserData } from "./userdata";
 import { TriggerInputSaveFile } from './file';
+import { MainScene } from "./scenes";
 
 const container = {}
 
@@ -131,6 +132,7 @@ function UpdateClassElement(className, value) {
 
 function ClosePlanetWin() {
     CloseOpenedWin();
+    MainScene.UnfocusObject();
     container.isPlanetWinOpen = false;
 }
 function OpenPlanetWin() {

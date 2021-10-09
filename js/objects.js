@@ -32,7 +32,7 @@ function InitPlanets() {
             })
         );
 
-        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"}, undefined, undefined, (e)=>SetPlanetWin(e.id));
+        new Object(MainScene.scene, planet.englishName, temp_obj, i * 35 + 150, getRandomBetw(0.01, 0.05), getRandomBetw(0.01, 0.028), true, {type: "_Interactible"}, undefined, undefined, (e)=>{SetPlanetWin(e.id); MainScene.FocusObject(e.id)});
     });
 }
 

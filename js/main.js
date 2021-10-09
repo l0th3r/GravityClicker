@@ -52,6 +52,7 @@ function Update() {
     // update planets data
     UpdatePlanetsData();
     
+    MainScene.Update();
     MainScene.Render();
 }
 
