@@ -49,14 +49,21 @@ const Fetch = {
         this.MakeReq(localPath, (e, f)=>{GameData.settings = f; successCallback()}, pendingCallback, failCallback);
     },
     GetPlanets: function(successCallback, pendingCallback, failCallback) {
-        
+
+        const orderPlanets = (e) => {
+            const sortedPlanets = e.sort((a, b) => a.aphelion - b.aphelion);
+            GameData.planets = sortedPlanets;
+            successCallback(sortedPlanets);
+        }
+
         //format url with settings
         const url = this.FormatRequestAndSend([
             "isPlanet,neq,false", 
             "id,neq,ceres",
             "id,neq,eris",
             "id,neq,haumea",
-            "id,neq,makemake"
+            "id,neq,makemake",
+            "id,neq,pluton"
         ], [
             "id",
             "englishName",
@@ -64,11 +71,12 @@ const Fetch = {
             "equaRadius",
             "sideralRotation",
             "discoveredBy",
-            "rel"
+            "rel",
+            "aphelion"
         ]);
 
         // request
-        this.MakeReq(url, (e, f)=>{GameData.planets = f.bodies; successCallback(f.bodies)}, pendingCallback, failCallback);
+        this.MakeReq(url, (e, f)=>{orderPlanets(f.bodies)}, pendingCallback, failCallback);
     }
 };
 

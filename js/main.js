@@ -1,14 +1,13 @@
 import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
-import { UserData, LoadUserData } from './userdata';
-import { SpawnMainUi } from './interface';
+import { LoadUserData, UserData } from './userdata';
+import { SpawnMainUi, Mine, SetPlanetWin } from './interface';
 
-LoadUserData();
 Fetch.GetPlanets(LoadLocal, HandlePending, HandleError);
 
-function LoadLocal(e) {
-    Fetch.GetJsonFile('/assets/settings.json', HandleSucess, ()=>{}, HandleError);
+function LoadLocal() {
+    Fetch.GetJsonFile('/assets/settings.json', HandleSucess, undefined, HandleError);
 }
 
 function HandlePending(e) {
@@ -22,6 +21,8 @@ function HandleError(e) {
 }
 
 function HandleSucess() {
+    LoadUserData();
+
     setTimeout(function() {
         document.getElementById('progress').style.width = "100%";
         document.getElementById('loading-txt').innerText = `Loading 100%`;
@@ -34,6 +35,7 @@ function HandleSucess() {
 
             // start three js scene
             MainScene.Init();
+            
             // start frame update
             Update();
 
@@ -44,10 +46,37 @@ function HandleSucess() {
 function Update() {
     requestAnimationFrame(Update);
 
-    // update all objects
+    // update all 3D objects
     Objects.forEach(obj => { obj.Update(); });
+
+    // update planets data
+    UpdatePlanetsData();
     
     MainScene.Render();
+}
+
+function UpdatePlanetsData() {
+    // get planets data
+    const planets = UserData.planets;
+
+    // get ones that mining is engaged
+    const needUpdate = planets.filter(p => p.data.miningProgression >= 0);
+
+    needUpdate.forEach(e => {
+        if(e.data.miningProgression < 100) {
+            UserData.GetPlanetData(e.data.id).data.miningProgression += 1;
+            
+            // update planets progressbars
+            var list = document.getElementsByClassName(`ui-${e.data.id}-progress`);
+            for (let item of list) {
+                item.style.width = `${UserData.GetPlanetData(e.data.id).data.miningProgression}%`;
+            }
+        }
+        else {
+            UserData.GetPlanetData(e.data.id).data.miningProgression = -1;
+            Mine(e.data.id);
+        }
+    });
 }
 
 // handle window resize

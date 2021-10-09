@@ -1,7 +1,7 @@
 {
     "ressources": [
         {
-            "name": "Carbon",
+            "name": "Rocks",
             "unit_value": 1,
             "mining_time": 1,
             "unit_upgrade": 1,
@@ -29,8 +29,56 @@
             "mining_time_upgrade_steps" : 25,
             "lvl_cap": 100,
             "bot_price": 1000
+        },
+        {
+            "name": "Iron",
+            "unit_value": 60,
+            "mining_time": 4,
+            "unit_upgrade": 60,
+            "mining_time_upgrade": 2,
+            "mining_time_upgrade_steps" : 25,
+            "lvl_cap": 100,
+            "bot_price": 1000
+        },
+        {
+            "name": "Iron",
+            "unit_value": 60,
+            "mining_time": 4,
+            "unit_upgrade": 60,
+            "mining_time_upgrade": 2,
+            "mining_time_upgrade_steps" : 25,
+            "lvl_cap": 100,
+            "bot_price": 1000
+        },
+        {
+            "name": "Iron",
+            "unit_value": 60,
+            "mining_time": 4,
+            "unit_upgrade": 60,
+            "mining_time_upgrade": 2,
+            "mining_time_upgrade_steps" : 25,
+            "lvl_cap": 100,
+            "bot_price": 1000
+        },
+        {
+            "name": "Iron",
+            "unit_value": 60,
+            "mining_time": 4,
+            "unit_upgrade": 60,
+            "mining_time_upgrade": 2,
+            "mining_time_upgrade_steps" : 25,
+            "lvl_cap": 100,
+            "bot_price": 1000
+        },
+        {
+            "name": "Iron",
+            "unit_value": 60,
+            "mining_time": 4,
+            "unit_upgrade": 60,
+            "mining_time_upgrade": 2,
+            "mining_time_upgrade_steps" : 25,
+            "lvl_cap": 100,
+            "bot_price": 1000
         }
-    ],
-    "planets": {
-    }
+    ]
 }

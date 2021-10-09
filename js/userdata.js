@@ -1,10 +1,13 @@
+import { GameData } from './data';
 import { updateMoneyUI } from './interface';
+import { OutputFile } from './file';
 
 var UserData = undefined;
 
-class GameData {
+class UserDataObj {
     money;
-    planets;
+    firstTime;
+    planets = [];
     AddPlanetData(data) {
         this.planets.push(data);
     }
@@ -19,9 +22,9 @@ class GameData {
         this.money += value;
         updateMoneyUI();
     }
-    constructor(money = 0) {
+    constructor(money = 0, firstTime = false) {
         this.money = money;
-        this.planets = [];
+        this.firstTime = firstTime;
     }
 }
 
@@ -43,11 +46,61 @@ class PlanetData {
 }
 
 function LoadUserData() {
-    // DEV
-    UserData = new GameData(10);
-    UserData.AddPlanetData(new PlanetData({id: "Jupiter", lvl: 1, stock: 0, stockLvl: 2, ressourceName: "Carbon"}));
-    UserData.AddPlanetData(new PlanetData({id: "Venus"}));
-    UserData.AddPlanetData(new PlanetData({id: "Earth"}));
+
+    if(!window.localStorage.GravityClicker) {
+        UserData = new UserDataObj(0, true);
+
+        // create planets and link them to ressources
+        GameData.planets.forEach((p, i) => {
+            UserData.AddPlanetData(new PlanetData({id: p.englishName, ressourceName: GameData.settings.ressources[i].name}));
+        });
+    } else {
+        const loadedData = JSON.parse(window.localStorage.GravityClicker);
+
+         // load User
+        UserData = new UserDataObj(loadedData.money);
+
+        // load planet and assign ressources values
+        loadedData.planets.forEach(planet => {
+            UserData.AddPlanetData(new PlanetData(planet.data)); 
+        });
+    }
 }
 
-export { UserData, LoadUserData };
+function SaveUserData(isAlert = false) {
+    window.localStorage.setItem('GravityClicker', JSON.stringify(UserData));
+    if(isAlert === true) alert("Your data are saved in your browser's files :)");
+}
+
+function ClearLocalData() {
+    UserData.requestWipe = true;
+    window.localStorage.removeItem('GravityClicker');
+    location.reload();
+}
+
+function OutputUserData() {
+    SaveUserData();
+    OutputFile("save.grvclick", btoa(window.localStorage.GravityClicker));
+}
+
+function HandleSaveFileLoad(fileContent) {
+
+    const parsedData = JSON.parse(atob(fileContent));
+    var error = "null";
+    var data;
+
+    try {
+        data = JSON.parse(response);
+    } catch(err) {
+        error = err;
+    }
+    
+    if(error = "null")
+    {
+        UserData = parsedData;
+        SaveUserData(true);
+        location.reload();
+    }
+}
+
+export { UserData, LoadUserData, SaveUserData, ClearLocalData, OutputUserData, HandleSaveFileLoad };
