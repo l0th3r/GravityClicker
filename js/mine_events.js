@@ -37,6 +37,7 @@ class MiningEvent {
             
             // Update planet Data
             UserData.GetPlanetData(this.planetId).data.miningProgression = this.currentPourcentage;
+            UserData.GetPlanetData(this.planetId).data.deltaProgression = this.currentDelta;
         } else {
             this.Then();
         }
@@ -48,9 +49,6 @@ class MiningEvent {
             this.currentDelta = startDelta;
             this.eventIndex = MiningEvents.length;
             MiningEvents.push(this);
-        }
-        else {
-            console.warn("Cannot add new event. One already exist on this planet :(");
         }
     }
 }

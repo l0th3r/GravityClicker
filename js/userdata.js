@@ -1,6 +1,7 @@
 import { GameData, GetRessourceData } from './data';
 import { updateMoneyUI } from './interface';
 import { OutputFile } from './file';
+import { MiningEvent } from './mine_events';
 
 var UserData = undefined;
 
@@ -36,7 +37,8 @@ class PlanetData {
         stock: 0,
         stockLvl: 1,
         ressourceName : "null",
-        miningProgression : 0
+        miningProgression : 0,
+        deltaProgression: 0
     }
     calculatedData = {
         unitValue: 0,
@@ -64,7 +66,6 @@ class PlanetData {
 }
 
 function LoadUserData() {
-
     if(!window.localStorage.GravityClicker) {
         UserData = new UserDataObj(0, true);
 
@@ -82,7 +83,18 @@ function LoadUserData() {
 
         // load planet and assign ressources values
         loadedData.planets.forEach(planet => {
-            UserData.AddPlanetData(new PlanetData(planet.data)); 
+            // resume mining doesnt work
+            planet.data.miningProgression = 0;
+            
+            UserData.AddPlanetData(new PlanetData(planet.data));
+            UserData.GetPlanetData(planet.data.id).CalculateData();
+            
+            // DOEST WORK
+            // Check pending progressions
+            // if(UserData.GetPlanetData(planet.data.id).data.miningProgression > 0) {
+            //     var temp = UserData.GetPlanetData(planet.data.id);
+            //     new MiningEvent(temp.data.id, temp.calculatedData.miningTime, temp.data.deltaProgression);
+            // }
         });
     }
 }
@@ -105,20 +117,23 @@ function OutputUserData() {
 
 function HandleSaveFileLoad(fileContent) {
 
-    const parsedData = JSON.parse(atob(fileContent));
+    var parsedData;
     var error = "null";
-    var data;
 
     try {
-        data = JSON.parse(response);
+        parsedData = JSON.parse(atob(fileContent));
     } catch(err) {
         error = err;
     }
     
-    if(error = "null")
+    if(error == "null")
     {
         UserData = parsedData;
         SaveUserData();
+        location.reload();
+    }
+    else {
+        console.log("error");
         location.reload();
     }
 }
