@@ -1,4 +1,14 @@
+import { UserData } from "./userdata";
+
 var GameData = {};
+
+function GetRessourceData(planetId) {
+    if(GameData && GameData.settings) {
+        return GameData.settings.ressources.filter(r => r.name === UserData.GetPlanetData(planetId).data.ressourceName)[0];
+    } else {
+        return undefined;
+    }
+}
 
 const Fetch = {
     MakeReq: function(url, successCallback, pendingCallback, failCallback) {
@@ -80,4 +90,4 @@ const Fetch = {
     }
 };
 
-export { GameData, Fetch };
+export { GameData, Fetch, GetRessourceData };

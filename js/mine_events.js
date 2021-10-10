@@ -20,10 +20,14 @@ class MiningEvent {
         return to;
     };
     Then() {
-        UserData.GetPlanetData(this.planetId).data.miningProgression = -1;
-        UpdatePlanetsProgressBar(this.planetId);
+        // mine ressource
         Mine(this.planetId);
 
+        // set progress value to 0 and update UI
+        UserData.GetPlanetData(this.planetId).data.miningProgression = 0;
+        UpdatePlanetsProgressBar(this.planetId);
+        
+        // remove event
         MiningEvents.splice(this.eventIndex, 1);
     }
     Update() {
@@ -33,9 +37,6 @@ class MiningEvent {
             
             // Update planet Data
             UserData.GetPlanetData(this.planetId).data.miningProgression = this.currentPourcentage;
-
-            // Update UI
-            UpdatePlanetsProgressBar(this.planetId);
         } else {
             this.Then();
         }

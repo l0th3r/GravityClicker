@@ -2,7 +2,7 @@ import { Fetch } from './data';
 import { MainScene } from './scenes.js';
 import { Objects, InitPlanets } from './objects';
 import { LoadUserData } from './userdata';
-import { SpawnMainUi } from './interface';
+import { SpawnMainUi, container, UpdatePlanetsProgressBar, UpdatePlanetWin } from './interface';
 import { MiningEvents } from './mine_events';
 
 Fetch.GetPlanets(LoadLocal, HandlePending, HandleError);
@@ -52,6 +52,12 @@ function Update() {
 
     // update mining events
     MiningEvents.forEach(me => me.Update());
+
+    if(MiningEvents.length > 0) {
+        // Update UI
+        UpdatePlanetsProgressBar(container.planetWinId);
+        UpdatePlanetWin();
+    }
     
     MainScene.controls.update();
     MainScene.Update();

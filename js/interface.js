@@ -1,4 +1,4 @@
-import { GameData } from "./data";
+import { GetRessourceData } from "./data";
 import { UserData, SaveUserData, ClearLocalData, OutputUserData } from "./userdata";
 import { TriggerInputSaveFile } from './file';
 import { MainScene } from "./scenes";
@@ -11,6 +11,7 @@ container.displayedWindow = undefined;
 container.planetWin = document.getElementById('ui-planet-win');
 container.isPlanetWinOpen = false
 container.planetWinProgressBar = document.getElementById('progress-bar-mine');
+container.planetWinProgressBarPrnct = document.getElementById('progress-bar-prcnt');
 container.planetWinData = {};
 container.ressourceData = undefined;
 
@@ -34,22 +35,27 @@ container.importBtn.addEventListener('click', TriggerInputSaveFile)
 document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
 
 function SetPlanetWinData(planetId) {
-    container.planetWinData.planetData = UserData.GetPlanetData(planetId).data;
-    container.planetWinData.ressourceData = GameData.settings.ressources.filter(r => r.name === container.planetWinData.planetData.ressourceName)[0];
+    UserData.GetPlanetData(planetId).CalculateData();
     
+    container.planetWinData.planetData = UserData.GetPlanetData(planetId).data;
+    container.planetWinData.calcPlanetData = UserData.GetPlanetData(planetId).calculatedData;
+    container.planetWinData.ressourceData = GetRessourceData(planetId);
     
     container.planetWinData.stockValue = container.planetWinData.planetData.stock * (container.planetWinData.ressourceData.unit_value + 1);
     container.planetWinId = planetId;
     container.mineBtn.value = container.planetWinData.planetData.id;
-    UpdatePlanetWin(planetId);
+    UpdatePlanetWin();
 }
 
-function UpdatePlanetWin(planetId) {
+function UpdatePlanetWin() {
     var planetData = container.planetWinData.planetData;
+    var calcPlanetData = container.planetWinData.calcPlanetData;
+
+    container.planetWinProgressBar.classList = "progress-planet " + `ui-${planetData.id}-progress`;
+    container.planetWinProgressBarPrnct.classList = "ui-data " + `ui-${planetData.id}-progress-prcnt`;
     
-    container.planetWinProgressBar.classList = "";
-    container.planetWinProgressBar.classList.add("progress-planet", `ui-${planetId}-progress`);
-    container.planetWinProgressBar.style.width = `${planetData.miningProgression + 1}%`;
+    // Update UI
+    UpdatePlanetsProgressBar(planetData.id);
 
     UpdateClassElement('ui-planet-name', planetData.id);
     UpdateClassElement('ui-ressource-name', planetData.ressourceName);
@@ -60,9 +66,11 @@ function UpdatePlanetWin(planetId) {
     UpdateClassElement('ui-stock-value', container.planetWinData.stockValue);
     UpdateClassElement('ui-next-stock-upgrade', planetData.stockLvl + 1);
     UpdateClassElement('ui-next-stock-upgrade-price', (planetData.stockLvl + 1) * 10);
-    
 
-    if(planetData.stock >= planetData.stockLvl * 10) {
+    UpdateClassElement('ui-next-mining-upgrade', planetData.lvl + 1);
+    UpdateClassElement('ui-next-mining-upgrade-price', calcPlanetData.nextUpdatePrice);
+
+    if(planetData.stock >= planetData.stockLvl * 10 || (planetData.miningProgression > 0 && planetData.miningProgression < 100)) {
         container.mineBtn.setAttribute('disabled', "true"); 
     }
     else {
@@ -101,7 +109,7 @@ function SellStock(planetId) {
     
     //Static
     const planetData = UserData.GetPlanetData(planetId).data;
-    const ressourceData = GameData.settings.ressources.filter(r => r.name === planetData.ressourceName)[0];
+    const ressourceData = GetRessourceData(planetId);
 
     UserData.ModMoney(planetData.stock * (ressourceData.unit_value + 1));
     UserData.GetPlanetData(planetId).data.stock = 0;
@@ -110,20 +118,21 @@ function SellStock(planetId) {
 }
 
 function MineEvent(planetId) {
-    const ressourceData = GameData.settings.ressources.filter(r => r.name === UserData.GetPlanetData(planetId).data.ressourceName)[0];
-    new MiningEvent(planetId, ressourceData.mining_time);
+    UserData.GetPlanetData(planetId).CalculateData();
+    const planet = UserData.GetPlanetData(planetId);
+
+    new MiningEvent(planetId, planet.calculatedData.miningTime);
 }
 
 function Mine(planetId) {
-    
     //Static
     const planetData = UserData.GetPlanetData(planetId).data;
 
-    if(planetData.stock < planetData.stockLvl * 10 && planetData.miningProgression === -1)
+    if(planetData.stock < planetData.stockLvl * 10)
     {
-        UserData.GetPlanetData(planetId).data.stock += 1;
+        UserData.GetPlanetData(planetId).data.stock += planetData.lvl;
         if(container.planetWinId === planetId)
-            SetPlanetWinData(planetId, false);
+            SetPlanetWinData(planetId);
     }
 }
 
@@ -139,6 +148,8 @@ function UpdatePlanetsProgressBar(planetId) {
     for (let item of list) {
         item.style.width = `${UserData.GetPlanetData(planetId).data.miningProgression}%`;
     }
+
+    UpdateClassElement(`ui-${planetId}-progress-prcnt`, Math.floor(UserData.GetPlanetData(planetId).data.miningProgression));
 }
 
 function ClosePlanetWin() {
@@ -207,4 +218,4 @@ window.onbeforeunload = function (event) {
         SaveUserData();
 };
 
-export { SpawnMainUi, updateMoneyUI, SetPlanetWinData, Mine, UpdatePlanetsProgressBar, OpenPlanetWin };
+export { UpdatePlanetWin, container, SpawnMainUi, updateMoneyUI, SetPlanetWinData, Mine, UpdatePlanetsProgressBar, OpenPlanetWin, UpdateClassElement };

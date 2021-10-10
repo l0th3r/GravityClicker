@@ -1,4 +1,4 @@
-import { GameData } from './data';
+import { GameData, GetRessourceData } from './data';
 import { updateMoneyUI } from './interface';
 import { OutputFile } from './file';
 
@@ -32,10 +32,28 @@ class PlanetData {
     data = {
         id: "null",
         lvl: 1,
+        timeLvl: 1,
         stock: 0,
         stockLvl: 1,
-        ressourceName : "Carbon",
-        miningProgression : -1
+        ressourceName : "null",
+        miningProgression : 0
+    }
+    calculatedData = {
+        unitValue: 0,
+        miningTime: 0,
+        nextUpdatePrice: 0,
+    }
+    CalculateData() {
+        const ressData = GetRessourceData(this.data.id);
+
+        // calculate unit value depending on the level
+        this.calculatedData.unitValue = (this.data.lvl + 2) * ressData.unit_value;
+
+        // calculate the price of the next upgrade
+        this.calculatedData.nextUpdatePrice = (ressData.price * ressData.coef ^ this.data.lvl - 1);
+
+        // dont have a fromula yet
+        this.calculatedData.miningTime = ressData.mining_time;
     }
     InjectData(inputData = {}) {
         this.data = Object.assign(this.data, inputData);
@@ -54,6 +72,8 @@ function LoadUserData() {
         GameData.planets.forEach((p, i) => {
             UserData.AddPlanetData(new PlanetData({id: p.englishName, ressourceName: GameData.settings.ressources[i].name}));
         });
+
+        SaveUserData();
     } else {
         const loadedData = JSON.parse(window.localStorage.GravityClicker);
 

@@ -1,84 +1,71 @@
 {
     "ressources": [
         {
-            "name": "Rocks",
+            "name": "Sulfur S",
+            "price": 3.738,
+            "mining_time": 0.6,
             "unit_value": 1,
-            "mining_time": 1,
-            "unit_upgrade": 1,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
+            "coef": 1.07,
             "bot_price": 500
         },
         {
-            "name": "Copper",
+            "name": "Silicate SiO2",
+            "price": 60,
+            "mining_time" : 3,
             "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "coef": 1.15,
+            "bot_price": 15000
+        }, 
+        {
+            "name": "Hydrogen H",
+            "price": 720,
+            "mining_time" : 6,
+            "unit_value": 540,
+            "coef": 1.14,
+            "bot_price": 100000
         },
         {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "name": "Silicon Si",
+            "price": 8640,
+            "mining_time": 12,
+            "unit_value": 4320,
+            "coef": 1.13,
+            "bot_price": 500000
         },
         {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "name": "Helium He",
+            "price": 103680,
+            "mining_time": 24,
+            "unit_value": 51840,
+            "coef": 1.12,
+            "bot_price": 1200000
         },
         {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "name": "Ammonia NH3",
+            "price": 1244160,
+            "mining_time": 96,
+            "unit_value": 622080,
+            "coef": 1.11,
+            "bot_price": 10000000
         },
         {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "name": "Methane CH4",
+            "price": 14929920,
+            "mining_time": 384,
+            "unit_value": 7464960,
+            "coef": 1.10,
+            "bot_price": 111111111
         },
         {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
-        },
-        {
-            "name": "Iron",
-            "unit_value": 60,
-            "mining_time": 4,
-            "unit_upgrade": 60,
-            "mining_time_upgrade": 2,
-            "mining_time_upgrade_steps" : 25,
-            "lvl_cap": 100,
-            "bot_price": 1000
+            "name": "Nickel Ni",
+            "price": 179159040,
+            "mining_time": 1536,
+            "unit_value": 89579520,
+            "coef": 1.09,
+            "bot_price": 555555555
         }
-    ]
+    ],
+    "upgrades": {
+        "lvl_cap": 100
+    }
 }
