@@ -199,6 +199,44 @@
     color: rgb(225, 166, 18) !important;
 }
 
+#ui-planets-win {
+    width: 20%;
+}
+
+ul {
+    padding: 0;
+}
+
+li::marker {
+    content: "";
+}
+
+li {
+    padding: 15px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    font-size: larger;
+}
+li:hover {
+    cursor: pointer;
+    background-color: var(--main-ui-nav-bg);
+}
+
+/* li::after {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: var(--main-ui-nav-bg);
+} */
+
+/* li:hover::after {
+    background-color: var(--main-ui-progress-bg);
+} */
+
+
 /* TEMPORARY */
 
 /* icons */
@@ -212,6 +250,9 @@
         border-radius: 0;
     }
     #ui-planet-win {
+        width: 100%;
+    }
+    #ui-planets-win {
         width: 100%;
     }
 }

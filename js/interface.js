@@ -22,7 +22,10 @@ container.saveBtn = document.getElementById('btn-save');
 container.wipeBtn = document.getElementById('btn-wipe');
 container.exportBtn = document.getElementById('btn-export');
 container.importBtn = document.getElementById('btn-import');
+container.planetsBtn = document.getElementById('btn-planet');
 container.logsContainer = document.getElementById('ui-log-cont');
+container.planetList = document.getElementById("planets-list");
+container.planetsWin = document.getElementById("ui-planets-win");
 
 // Events
 container.mineBtn.addEventListener('click', ()=>MineEvent(container.mineBtn.value));
@@ -31,9 +34,11 @@ container.upgradeStock.addEventListener('click', ()=>UpgradeStock(container.mine
 container.saveBtn.addEventListener('click', ()=>SaveUserData(true));
 container.wipeBtn.addEventListener('click', ClearLocalData);
 container.exportBtn.addEventListener('click', OutputUserData);
-container.importBtn.addEventListener('click', TriggerInputSaveFile)
+container.importBtn.addEventListener('click', TriggerInputSaveFile);
+container.planetsBtn.addEventListener('click', OpenPlanetsWin);
 
 document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
+document.getElementById('ui-planets-win-close').addEventListener('click', ClosePlanetsWin);
 
 function SetPlanetWinData(planetId) {
     UserData.GetPlanetData(planetId).CalculateData();
@@ -157,6 +162,20 @@ function UpdatePlanetsProgressBar(planetId) {
     UpdateClassElement(`ui-${planetId}-progress-prcnt`, Math.floor(UserData.GetPlanetData(planetId).data.miningProgression));
 }
 
+function OpenPlanetsWin()
+{
+    if(container.planetsWin) {
+        container.planetsWin.style.display = "block";
+    }
+}
+
+function ClosePlanetsWin()
+{
+    if(container.planetsWin) {
+        container.planetsWin.style.display = "none";
+    }
+}
+
 function ClosePlanetWin() {
     CloseOpenedWin();
     MainScene.UnfocusObject();
@@ -179,6 +198,17 @@ function SetDisplayedWin(element) {
 
 function SpawnMainUi() {
     SpawnHeader();
+    InitPlanetList();
+}
+
+function InitPlanetList() {
+    UserData.planets.forEach(planet => {
+        var element = document.createElement('li');
+        element.innerText = planet.data.id;
+        element.id = `${planet.data.id}-btn`;
+        container.planetList.appendChild(element);
+        document.getElementById(`${planet.data.id}-btn`).addEventListener('click', ()=>{MainScene.FocusObject(planet.data.id); ClosePlanetsWin(); SetPlanetWinData(planet.data.id); OpenPlanetWin()});
+    });
 }
 
 function SpawnHeader() {
