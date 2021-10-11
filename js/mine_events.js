@@ -26,9 +26,6 @@ class MiningEvent {
         // set progress value to 0 and update UI
         UserData.GetPlanetData(this.planetId).data.miningProgression = 0;
         UpdatePlanetsProgressBar(this.planetId);
-        
-        // remove event
-        MiningEvents.splice(this.eventIndex, 1);
     }
     Update() {
         if(this.currentPourcentage < 100) {
@@ -39,6 +36,8 @@ class MiningEvent {
             UserData.GetPlanetData(this.planetId).data.miningProgression = this.currentPourcentage;
             UserData.GetPlanetData(this.planetId).data.deltaProgression = this.currentDelta;
         } else {
+            // remove event
+            MiningEvents.splice(MiningEvents.findIndex(me=>me.planetId === this.planetId), 1);
             this.Then();
         }
     }

@@ -1,6 +1,7 @@
 import { GameData, GetRessourceData } from './data';
 import { updateMoneyUI, NewLog } from './interface';
 import { OutputFile } from './file';
+import { playSaveSound, playMakeMoney } from './sound';
 
 var UserData = undefined;
 
@@ -22,7 +23,10 @@ class UserDataObj {
         this.money += value;
         updateMoneyUI();
         if(value > 0)
+        {
             NewLog(`+${value}$`);
+            playMakeMoney();
+        }
         else
             NewLog(`${value}$`);
     }
@@ -104,7 +108,10 @@ function LoadUserData() {
 
 function SaveUserData(isAlert = true) {
     window.localStorage.setItem('GravityClicker', JSON.stringify(UserData));
-    if(isAlert === true) NewLog("Game Saved !", true);
+    if(isAlert === true) {
+        NewLog("Game Saved !", true);
+        playSaveSound();
+    }
 }
 
 function ClearLocalData() {
@@ -114,7 +121,7 @@ function ClearLocalData() {
 }
 
 function OutputUserData() {
-    SaveUserData();
+    SaveUserData(false);
     OutputFile("save.grvclick", btoa(window.localStorage.GravityClicker));
 }
 

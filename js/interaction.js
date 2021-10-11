@@ -13,8 +13,6 @@ function onMouseMove( event ) {
 		MainScene.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 		
 		MainScene.HoverObjects();
-	} else {
-		//
 	}
 }
 

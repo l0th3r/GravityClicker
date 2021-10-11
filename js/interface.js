@@ -3,6 +3,7 @@ import { UserData, SaveUserData, ClearLocalData, OutputUserData } from "./userda
 import { TriggerInputSaveFile } from './file';
 import { MainScene } from "./scenes";
 import { MiningEvent } from './mine_events';
+import { playCollectSound, playMachineSound, playClickSound } from './sound';
 
 const container = {}
 
@@ -33,12 +34,12 @@ container.sellStockBtn.addEventListener('click', ()=>SellStock(container.mineBtn
 container.upgradeStock.addEventListener('click', ()=>UpgradeStock(container.mineBtn.value));
 container.saveBtn.addEventListener('click', ()=>SaveUserData(true));
 container.wipeBtn.addEventListener('click', ClearLocalData);
-container.exportBtn.addEventListener('click', OutputUserData);
-container.importBtn.addEventListener('click', TriggerInputSaveFile);
-container.planetsBtn.addEventListener('click', OpenPlanetsWin);
+container.exportBtn.addEventListener('click', ()=>{OutputUserData(); playClickSound();});
+container.importBtn.addEventListener('click', ()=>{TriggerInputSaveFile(); playClickSound();});
+container.planetsBtn.addEventListener('click', ()=>{OpenPlanetsWin(); playClickSound();});
 
-document.getElementById('ui-planet-win-close').addEventListener('click', ClosePlanetWin);
-document.getElementById('ui-planets-win-close').addEventListener('click', ClosePlanetsWin);
+document.getElementById('ui-planet-win-close').addEventListener('click', ()=>{ClosePlanetWin(); playClickSound();});
+document.getElementById('ui-planets-win-close').addEventListener('click', ()=>{ClosePlanetsWin(); playClickSound();});
 
 function SetPlanetWinData(planetId) {
     UserData.GetPlanetData(planetId).CalculateData();
@@ -128,6 +129,8 @@ function MineEvent(planetId) {
     UserData.GetPlanetData(planetId).CalculateData();
     const planet = UserData.GetPlanetData(planetId);
 
+    playMachineSound();
+
     new MiningEvent(planetId, planet.calculatedData.miningTime);
 }
 
@@ -140,6 +143,7 @@ function Mine(planetId) {
         UserData.GetPlanetData(planetId).data.stock += planetData.lvl;
 
         NewLog("+1 " + UserData.GetPlanetData(planetId).data.ressourceName);
+        playCollectSound();
 
         if(container.planetWinId === planetId)
             SetPlanetWinData(planetId);
@@ -207,7 +211,7 @@ function InitPlanetList() {
         element.innerText = planet.data.id;
         element.id = `${planet.data.id}-btn`;
         container.planetList.appendChild(element);
-        document.getElementById(`${planet.data.id}-btn`).addEventListener('click', ()=>{MainScene.FocusObject(planet.data.id); ClosePlanetsWin(); SetPlanetWinData(planet.data.id); OpenPlanetWin()});
+        document.getElementById(`${planet.data.id}-btn`).addEventListener('click', ()=>{playClickSound(); MainScene.FocusObject(planet.data.id); ClosePlanetsWin(); SetPlanetWinData(planet.data.id); OpenPlanetWin()});
     });
 }
 

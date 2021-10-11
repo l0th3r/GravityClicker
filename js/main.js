@@ -40,8 +40,8 @@ function HandleSucess() {
             // start frame update
             Update();
 
-        }, /*800*/0);
-    }, /*1000*/0);
+        }, /*800*/800);
+    }, /*1000*/1000);
 }
 
 function Update() {
