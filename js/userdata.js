@@ -1,7 +1,6 @@
 import { GameData, GetRessourceData } from './data';
-import { updateMoneyUI } from './interface';
+import { updateMoneyUI, NewLog } from './interface';
 import { OutputFile } from './file';
-import { MiningEvent } from './mine_events';
 
 var UserData = undefined;
 
@@ -22,6 +21,10 @@ class UserDataObj {
     ModMoney(value) {
         this.money += value;
         updateMoneyUI();
+        if(value > 0)
+            NewLog(`+${value}$`);
+        else
+            NewLog(`${value}$`);
     }
     constructor(money = 0, firstTime = false) {
         this.money = money;
@@ -66,7 +69,7 @@ class PlanetData {
 }
 
 function LoadUserData() {
-    if(!window.localStorage.GravityClicker) {
+    if(!window.localStorage.GravityClicker || window.localStorage.GravityClicker === "undefined") {
         UserData = new UserDataObj(0, true);
 
         // create planets and link them to ressources
@@ -99,9 +102,9 @@ function LoadUserData() {
     }
 }
 
-function SaveUserData(isAlert = false) {
+function SaveUserData(isAlert = true) {
     window.localStorage.setItem('GravityClicker', JSON.stringify(UserData));
-    if(isAlert === true) alert("Your data are saved in your browser's files :)");
+    if(isAlert === true) NewLog("Game Saved !", true);
 }
 
 function ClearLocalData() {

@@ -22,12 +22,13 @@ container.saveBtn = document.getElementById('btn-save');
 container.wipeBtn = document.getElementById('btn-wipe');
 container.exportBtn = document.getElementById('btn-export');
 container.importBtn = document.getElementById('btn-import');
+container.logsContainer = document.getElementById('ui-log-cont');
 
 // Events
 container.mineBtn.addEventListener('click', ()=>MineEvent(container.mineBtn.value));
 container.sellStockBtn.addEventListener('click', ()=>SellStock(container.mineBtn.value));
 container.upgradeStock.addEventListener('click', ()=>UpgradeStock(container.mineBtn.value));
-container.saveBtn.addEventListener('click', SaveUserData);
+container.saveBtn.addEventListener('click', ()=>SaveUserData(true));
 container.wipeBtn.addEventListener('click', ClearLocalData);
 container.exportBtn.addEventListener('click', OutputUserData);
 container.importBtn.addEventListener('click', TriggerInputSaveFile)
@@ -115,6 +116,7 @@ function SellStock(planetId) {
     UserData.GetPlanetData(planetId).data.stock = 0;
     
     SetPlanetWinData(planetId);
+    SaveUserData(false);
 }
 
 function MineEvent(planetId) {
@@ -131,6 +133,9 @@ function Mine(planetId) {
     if(planetData.stock < planetData.stockLvl * 10)
     {
         UserData.GetPlanetData(planetId).data.stock += planetData.lvl;
+
+        NewLog("+1 " + UserData.GetPlanetData(planetId).data.ressourceName);
+
         if(container.planetWinId === planetId)
             SetPlanetWinData(planetId);
     }
@@ -215,7 +220,31 @@ for (let item of list) {
 
 window.onbeforeunload = function (event) {
     if(UserData && !UserData.requestWipe)
-        SaveUserData();
+        SaveUserData(false);
 };
 
-export { UpdatePlanetWin, container, SpawnMainUi, updateMoneyUI, SetPlanetWinData, Mine, UpdatePlanetsProgressBar, OpenPlanetWin, UpdateClassElement };
+var logsCounter = 0;
+
+function NewLog(content, isImportant = false) {
+
+    const cont = document.createElement('div');
+    cont.id = `ui-log-win-${logsCounter}`;
+
+    if(isImportant) {
+        cont.innerHTML = `
+            <div class="ui-log-win ui-container ui-bottom ui-element ui-panel ui-border">
+                <span class="warning">${content}</span>
+            </div>
+        `;
+    } else {
+        cont.innerHTML = `
+            <div class="ui-log-win ui-container ui-bottom ui-element ui-panel ui-border">
+                <span>${content}</span>
+            </div>
+        `;
+    }
+    container.logsContainer.appendChild(cont);
+    logsCounter++;
+}
+
+export { NewLog, UpdatePlanetWin, container, SpawnMainUi, updateMoneyUI, SetPlanetWinData, Mine, UpdatePlanetsProgressBar, OpenPlanetWin, UpdateClassElement };

@@ -173,6 +173,32 @@
     height: 100%;
 }
 
+.ui-log-win {
+    padding: 10px;
+    left: 5%;
+    color: #fff;
+    background: var(--main-ui-faded-bg);
+    animation: 2s ease-in-out 1s 1 both running moveTop;
+}
+
+@keyframes moveTop {
+    0% {
+        bottom: 90px;
+        opacity: 100%;
+    }
+    60% {
+        opacity: 100%;
+    }
+    100% {
+        bottom: 170px;
+        opacity: 0%;
+    }
+}
+
+.warning {
+    color: rgb(225, 166, 18) !important;
+}
+
 /* TEMPORARY */
 
 /* icons */
