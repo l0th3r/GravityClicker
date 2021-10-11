@@ -27,6 +27,7 @@ container.planetsBtn = document.getElementById('btn-planet');
 container.logsContainer = document.getElementById('ui-log-cont');
 container.planetList = document.getElementById("planets-list");
 container.planetsWin = document.getElementById("ui-planets-win");
+container.upgradeMineBtn = document.getElementById('btn-upgrade-mining');
 
 // Events
 container.mineBtn.addEventListener('click', ()=>MineEvent(container.mineBtn.value));
@@ -37,6 +38,7 @@ container.wipeBtn.addEventListener('click', ClearLocalData);
 container.exportBtn.addEventListener('click', ()=>{OutputUserData(); playClickSound();});
 container.importBtn.addEventListener('click', ()=>{TriggerInputSaveFile(); playClickSound();});
 container.planetsBtn.addEventListener('click', ()=>{OpenPlanetsWin(); playClickSound();});
+container.upgradeMineBtn.addEventListener('click', ()=>UpgradeMining(container.mineBtn.value));
 
 document.getElementById('ui-planet-win-close').addEventListener('click', ()=>{ClosePlanetWin(); playClickSound();});
 document.getElementById('ui-planets-win-close').addEventListener('click', ()=>{ClosePlanetsWin(); playClickSound();});
@@ -84,6 +86,19 @@ function UpdatePlanetWin() {
         container.mineBtn.removeAttribute('disabled'); 
     }
 
+    if(planetData.lvl >= 100) {
+        container.upgradeMineBtn.style.display = "none";
+    }
+    else {
+        container.upgradeMineBtn.style.display = "inline";
+        if(UserData.money < calcPlanetData.nextUpdatePrice) {
+            container.upgradeMineBtn.setAttribute('disabled', "true"); 
+        }
+        else {
+            container.upgradeMineBtn.removeAttribute('disabled'); 
+        }
+    }
+
     if(planetData.stock <= 0) {
         container.sellStockBtn.setAttribute('disabled', "true"); 
     }
@@ -98,6 +113,18 @@ function UpdatePlanetWin() {
     }
 }
 
+function UpgradeMining(planetId) {
+    const planetData = UserData.GetPlanetData(planetId);
+
+    if(UserData.money >= planetData.calculatedData.nextUpdatePrice) {
+        UserData.ModMoney(-planetData.calculatedData.nextUpdatePrice);
+        UserData.GetPlanetData(planetId).data.lvl += 1;
+        UserData.GetPlanetData(planetId).CalculateData();
+    }
+
+    SetPlanetWinData(planetId);
+}
+
 function UpgradeStock(planetId) {
 
     //Static
@@ -109,7 +136,6 @@ function UpgradeStock(planetId) {
     }
     
     SetPlanetWinData(planetId);
-    OpenPlanetWin();
 }
 
 function SellStock(planetId) {
@@ -140,9 +166,15 @@ function Mine(planetId) {
 
     if(planetData.stock < planetData.stockLvl * 10)
     {
-        UserData.GetPlanetData(planetId).data.stock += planetData.lvl;
-
-        NewLog("+1 " + UserData.GetPlanetData(planetId).data.ressourceName);
+        if(planetData.stock + planetData.lvl > planetData.stockLvl * 10) {
+            NewLog(`+ ${planetData.stock - planetData.stockLvl * 10}` + planetData.ressourceName);
+            planetData.stock = planetData.stockLvl * 10;
+        } else {
+            planetData.stock += planetData.lvl;
+            NewLog(`+ ${planetData.lvl}` + planetData.ressourceName);
+        }
+        
+        
         playCollectSound();
 
         if(container.planetWinId === planetId)
